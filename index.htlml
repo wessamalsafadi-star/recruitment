@@ -267,7 +267,13 @@
 </div>
 
 <script>
-  const WEBHOOK_URL = 'https://your-webhook-url.com/endpoint'; // ← replace
+  const WEBHOOK_BASE = 'https://engageteam.app.n8n.cloud/webhook/recruit-landing'; // ← replace
+
+  // Read ?phone= from the page URL if present
+  const phoneParam = new URLSearchParams(window.location.search).get('phone');
+  const WEBHOOK_URL = phoneParam
+    ? `${WEBHOOK_BASE}?phone=${encodeURIComponent(phoneParam)}`
+    : WEBHOOK_BASE;
 
   const dropZone     = document.getElementById('dropZone');
   const fileInput    = document.getElementById('fileInput');
