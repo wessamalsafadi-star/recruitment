@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Our Team — betterhomes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:  #1F343F;
+      --gold:  #E0BB9E;
+      --gold2: #c9a07a;
+      --muted: #8a9da5;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(224,187,158,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .logo-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+    .logo-pipe {
+      width: 1px; height: 18px;
+      background: rgba(224,187,158,0.3);
+    }
+    .logo-tag {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      font-weight: 400;
+    }
+
+    .heading { margin-bottom: 40px; }
+    .heading h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 38px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .heading h1 em { font-style: italic; color: var(--gold); }
+    .heading p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.4);
+      font-weight: 300;
+      max-width: 320px;
+    }
+
+    .drop-zone {
+      position: relative;
+      border: 1.5px dashed rgba(224,187,158,0.3);
+      border-radius: 12px;
+      padding: 52px 32px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(255,255,255,0.03);
+      transition: border-color 0.25s, background 0.25s;
+      margin-bottom: 16px;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--gold2);
+      background: rgba(224,187,158,0.05);
+    }
+    .drop-zone.has-file {
+      border-color: rgba(106,171,122,0.5);
+      background: rgba(106,171,122,0.05);
+      padding: 28px 32px;
+    }
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+
+    .dz-default { }
+    .drop-zone.has-file .dz-default { display: none; }
+
+    .dz-icon { font-size: 32px; margin-bottom: 16px; display: block; opacity: 0.7; }
+    .dz-title { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.8); margin-bottom: 6px; }
+    .dz-sub { font-size: 13px; color: rgba(255,255,255,0.3); line-height: 1.6; }
+    .dz-sub span { color: var(--gold2); }
+
+    .dz-preview { display: none; align-items: center; gap: 14px; text-align: left; }
+    .drop-zone.has-file .dz-preview { display: flex; }
+
+    .dz-preview-icon {
+      width: 42px; height: 42px;
+      background: rgba(106,171,122,0.15);
+      border: 1px solid rgba(106,171,122,0.3);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .dz-preview-info { flex: 1; min-width: 0; }
+    .dz-preview-name { font-size: 14px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dz-preview-size { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .dz-remove {
+      background: none; border: none;
+      color: var(--muted); cursor: pointer;
+      font-size: 18px; padding: 4px; line-height: 1;
+      transition: color 0.2s; flex-shrink: 0;
+    }
+    .dz-remove:hover { color: #e07070; }
+
+    .error-msg {
+      display: none; font-size: 12px; color: #e07070;
+      margin-bottom: 16px; padding-left: 4px;
+    }
+    .error-msg.visible { display: block; }
+
+    .btn {
+      width: 100%; padding: 17px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+      color: var(--dark); border: none; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 10px;
+      transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(224,187,158,0.25); }
+    .btn:active:not(:disabled) { transform: translateY(0); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-arrow { font-size: 16px; transition: transform 0.2s; }
+    .btn:hover:not(:disabled) .btn-arrow { transform: translateX(4px); }
+
+    .spinner {
+      display: none; width: 16px; height: 16px;
+      border: 2px solid rgba(31,52,63,0.25);
+      border-top-color: var(--dark);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .btn.loading .spinner { display: block; }
+    .btn.loading .btn-label, .btn.loading .btn-arrow { display: none; }
+
+    .success { display: none; flex-direction: column; align-items: flex-start; animation: fadeUp 0.5s ease both; }
+    .success.visible { display: flex; }
+    .success-check {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 24px;
+      animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .success h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: #fff; margin-bottom: 10px; }
+    .success p { font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.75; font-weight: 300; }
+
+    .foot { margin-top: 24px; font-size: 12px; color: rgba(255,255,255,0.18); letter-spacing: 0.3px; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pop { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+
+    @media (max-width: 400px) { .heading h1 { font-size: 30px; } }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <div id="formState">
+    <div class="logo">
+      <span class="logo-mark">bh</span>
+      <div class="logo-pipe"></div>
+      <span class="logo-tag">Careers</span>
+    </div>
+
+    <div class="heading">
+      <h1>Drop Your<br><em>Resume.</em></h1>
+      <p>We're always looking for great talent. Upload your CV and we'll take it from there.</p>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".pdf,.doc,.docx">
+
+      <div class="dz-default">
+        <span class="dz-icon">📄</span>
+        <p class="dz-title">Drag & drop your file</p>
+        <p class="dz-sub">or <span>click to browse</span> &nbsp;·&nbsp; PDF, DOC, DOCX</p>
+      </div>
+
+      <div class="dz-preview">
+        <div class="dz-preview-icon">📎</div>
+        <div class="dz-preview-info">
+          <div class="dz-preview-name" id="fileName"></div>
+          <div class="dz-preview-size" id="fileSize"></div>
+        </div>
+        <button type="button" class="dz-remove" id="removeBtn">✕</button>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <button class="btn" id="submitBtn" disabled>
+      <span class="btn-label">Submit Resume</span>
+      <span class="btn-arrow">→</span>
+      <div class="spinner"></div>
+    </button>
+
+    <p class="foot">Your information is handled with care and never shared without consent.</p>
+  </div>
+
+  <div class="success" id="successState">
+    <div class="logo">
+      <span class="logo-mark">bh</span>
+      <div class="logo-pipe"></div>
+      <span class="logo-tag">Careers</span>
+    </div>
+    <div class="success-check">✓</div>
+    <h2>We've Got It.</h2>
+    <p>Your resume has been received.<br>Our team will be in touch if there's a fit.</p>
+  </div>
+
+</div>
+
+<script>
+  const WEBHOOK_URL = 'https://your-webhook-url.com/endpoint'; // ← replace
+
+  const dropZone     = document.getElementById('dropZone');
+  const fileInput    = document.getElementById('fileInput');
+  const removeBtn    = document.getElementById('removeBtn');
+  const submitBtn    = document.getElementById('submitBtn');
+  const errorMsg     = document.getElementById('errorMsg');
+  const formState    = document.getElementById('formState');
+  const successState = document.getElementById('successState');
+
+  let selectedFile = null;
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  });
+
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
+  removeBtn.addEventListener('click', e => { e.stopPropagation(); clearFile(); });
+
+  function setFile(file) {
+    if (!/\.(pdf|doc|docx)$/i.test(file.name)) return showError('Please upload a PDF, DOC, or DOCX file.');
+    if (file.size > 10 * 1024 * 1024) return showError('File must be under 10 MB.');
+    hideError();
+    selectedFile = file;
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = fmt(file.size);
+    dropZone.classList.add('has-file');
+    submitBtn.disabled = false;
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    fileInput.value = '';
+    dropZone.classList.remove('has-file');
+    submitBtn.disabled = true;
+  }
+
+  function fmt(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+    return (b / 1048576).toFixed(1) + ' MB';
+  }
+
+  function showError(msg) { errorMsg.textContent = msg; errorMsg.classList.add('visible'); }
+  function hideError() { errorMsg.classList.remove('visible'); }
+
+  submitBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+    hideError();
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+
+    try {
+      const fd = new FormData();
+      fd.append('resume', selectedFile, selectedFile.name);
+      fd.append('submittedAt', new Date().toISOString());
+
+      const res = await fetch(WEBHOOK_URL, { method: 'POST', body: fd });
+      if (!res.ok) throw new Error(res.status);
+
+      formState.style.display = 'none';
+      successState.classList.add('visible');
+    } catch {
+      showError('Something went wrong. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('loading');
+    }
+  });
+</script>
+</body>
+</html>
